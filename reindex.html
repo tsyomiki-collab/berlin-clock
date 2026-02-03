@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Berlin clock</title>
+
+  <style>
+    @font-face {
+      font-family: "SegoeUI";
+      src:
+        local("Segoe UI Light"),
+        url("https://c.s-microsoft.com/static/fonts/segoe-ui/west-european/light/latest.woff2") format("woff2"),
+        url("https://c.s-microsoft.com/static/fonts/segoe-ui/west-european/light/latest.woff") format("woff"),
+        url("https://c.s-microsoft.com/static/fonts/segoe-ui/west-european/light/latest.ttf") format("truetype");
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: transparent;
+    }
+
+    #clock {
+      font-family: "SegoeUI", "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+      font-weight: 300;
+      font-size: 9px;
+      letter-spacing: 0.01em;
+      line-height: 14px;
+      white-space: nowrap;
+      color: #000;
+      opacity: 0.9;
+
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+  </style>
+</head>
+
+<body>
+  <span id="clock"></span>
+
+  <script>
+    const el = document.getElementById("clock");
+
+    const formatter = new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Europe/Berlin",
+      hour12: false,
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+
+    function tick() {
+      el.textContent = formatter.format(new Date()) + ", berlin_";
+
+      const delay = 60000 - (Date.now() % 60000) + 20;
+      setTimeout(tick, delay);
+    }
+
+    tick();
+  </script>
+</body>
+</html>
