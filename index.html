@@ -2,28 +2,35 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Clock</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Berlin clock</title>
+
   <style>
-    html, body { margin: 0; padding: 0; background: transparent; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: transparent;
+    }
+
     #clock {
-      font-family: "Noto Sans", "Segoe UI", Arial, sans-serif;
-      font-weight: 100;
-      font-size: 8px;
-      letter-spacing: 0.06em;
+      font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+      font-weight: 300;          /* Segoe UI Light */
+      font-size: 9px;
+      letter-spacing: 0.02em;
       color: #000;
       white-space: nowrap;
       line-height: 14px;
-      padding: 0;
     }
   </style>
 </head>
+
 <body>
   <span id="clock"></span>
 
   <script>
     const el = document.getElementById("clock");
-    const fmt = new Intl.DateTimeFormat("en-GB", {
+
+    const formatter = new Intl.DateTimeFormat("en-GB", {
       timeZone: "Europe/Berlin",
       hour12: false,
       hour: "2-digit",
@@ -32,10 +39,12 @@
     });
 
     function tick() {
-      el.textContent = fmt.format(new Date()) + ", berlin_";
+      el.textContent = formatter.format(new Date()) + ", berlin_";
+
       const delay = 1000 - (Date.now() % 1000) + 10;
       setTimeout(tick, delay);
     }
+
     tick();
   </script>
 </body>
