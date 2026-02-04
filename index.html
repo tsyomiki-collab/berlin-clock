@@ -1,67 +1,267 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Berlin clock</title>
+<div id="rg-gallery">
+  <button class="rg-btn rg-prev" type="button" aria-label="Previous">⟨</button>
 
-  <style>
-    @font-face {
-      font-family: "SegoeUI";
-      src:
-        local("Segoe UI Light"),
-        url("https://c.s-microsoft.com/static/fonts/segoe-ui/west-european/light/latest.woff2") format("woff2"),
-        url("https://c.s-microsoft.com/static/fonts/segoe-ui/west-european/light/latest.woff") format("woff"),
-        url("https://c.s-microsoft.com/static/fonts/segoe-ui/west-european/light/latest.ttf") format("truetype");
-      font-weight: 500;
-      font-style: normal;
-      font-display: swap;
-    }
+  <div class="rg-wrapper">
+    <div class="rg-sideSlot">
+      <img id="rg-left" class="rg-side" alt="">
+    </div>
 
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: transparent;
-    }
+    <div id="rg-center" class="rg-centerSlot"></div>
 
-    #clock {
-      font-family: "SegoeUI", "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-      font-weight: 600;        /* Segoe UI Light */
-      font-size: 12px;
-      letter-spacing: 0.01em;
-      line-height: 16px;
-      white-space: nowrap;
-      color: #000;
+    <div class="rg-sideSlot">
+      <img id="rg-right" class="rg-side" alt="">
+    </div>
+  </div>
 
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-  </style>
-</head>
+  <button class="rg-btn rg-next" type="button" aria-label="Next">⟩</button>
+</div>
 
-<body>
-  <span id="clock"></span>
+<style>
+#rg-gallery{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#fcfcfc;
+  z-index:9999;
+}
 
-  <script>
-    const el = document.getElementById("clock");
 
-    const formatter = new Intl.DateTimeFormat("en-GB", {
-      timeZone: "Europe/Berlin",
-      hour12: false,
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit"
+.rg-wrapper{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  max-width:min(1200px, 92vw);
+  padding:0 150px;
+  box-sizing:border-box;
+}
+
+.rg-sideSlot{
+  width:220px;
+  height:200px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  margin:0 -50px; 
+}
+
+.rg-centerSlot{
+  width:min(720px, 70vw);
+  height:448px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+.rg-main{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+}
+
+.rg-side{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  opacity:.8;
+  display:block;
+}
+
+
+.rg-btn{
+  position:fixed;
+  top:50%;
+  transform:translateY(-50%);
+
+  width:56px;
+  height:56px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-sizing:border-box;
+
+  font-size:2rem;
+  line-height:1;
+  padding:0;
+  border:0;
+  background:transparent;
+  color:#666;
+  cursor:pointer;
+  user-select:none;
+
+  appearance:none;
+  -webkit-appearance:none;
+  -webkit-tap-highlight-color:transparent;
+}
+
+.rg-btn:focus{ outline:none; }
+.rg-btn:focus-visible{
+  outline:2px solid rgba(0,0,0,.25);
+  outline-offset:3px;
+}
+
+.rg-btn:active{
+  transform:translateY(-50%);
+}
+
+.rg-prev{ left:60px; }
+.rg-next{ right:60px; }
+
+@media (max-width:820px){
+  .rg-sideSlot{ display:none; }
+  .rg-centerSlot{ width:92vw; }
+}
+</style>
+
+<script>
+(function(){
+  const gallery = document.getElementById("rg-gallery");
+  if(!gallery) return;
+  if(gallery.dataset.rgInit === "1") return;
+  gallery.dataset.rgInit = "1";
+
+  const VIDEO_POSTER = "https://raw.githubusercontent.com/tsyomiki-collab/devil2/main/Screenshot%202026-02-03%20at%2019.01.32.png";
+
+  const elements=[
+    {type:'img',src:"https://github.com/tsyomiki-collab/devil2/raw/main/photo_2025-09-17%2001.41.48-2.webp"},
+    {type:'img',src:"https://github.com/tsyomiki-collab/devil2/raw/main/photo_2025-09-17%2001.50.23-2.webp"},
+    {type:'img',src:"https://raw.githubusercontent.com/tsyomiki-collab/devil1/main/DevilAngel_ElenasKasnatschejew_TianaLenz_Editorial_3.webp"},
+    {type:'img',src:"https://github.com/tsyomiki-collab/devil2/raw/main/photo_2025-09-17%2001.57.15-2.webp"},
+    {type:'img',src:"https://raw.githubusercontent.com/tsyomiki-collab/devil1/main/DevilAngel_ElenasKasnatschejew_TianaLenz_Editorial_5.webp"},
+    {type:'img',src:"https://github.com/tsyomiki-collab/devil2/raw/main/photo_2025-09-17%2001.59.22-2.webp"},
+    {
+      type:'video',
+      src:"https://res.cloudinary.com/dmtnse4sz/video/upload/v1769438095/Editorial_AngelundDevil_TokioHeavenAndHell43_pzzoaq.mp4",
+      poster: VIDEO_POSTER
+    },
+    {type:'img',src:"https://github.com/tsyomiki-collab/devil2/raw/main/photo_2025-09-17%2002.01.35-2.webp"},
+    {type:'img',src:"https://github.com/tsyomiki-collab/devil2/raw/main/photo_2025-09-17%2002.03.31-2.webp"},
+    {type:'img',src:"https://github.com/tsyomiki-collab/devil2/raw/main/photo_2025-09-17%2002.06.53-2.webp"},
+    {type:'img',src:"https://github.com/tsyomiki-collab/devil2/raw/main/DevilAngel_ElenasKasnatschejew_TianaLenz_Editorial_10.webp"}
+  ];
+
+  let index = 0;
+  let currentVideo = null;
+  let token = 0;
+
+  const left   = document.getElementById("rg-left");
+  const right  = document.getElementById("rg-right");
+  const center = document.getElementById("rg-center");
+  const prevBtn = gallery.querySelector(".rg-prev");
+  const nextBtn = gallery.querySelector(".rg-next");
+
+  if(!left || !right || !center || !prevBtn || !nextBtn) return;
+
+  const cache = new Map();
+
+  function preload(url){
+    if(!url) return Promise.resolve();
+    if(cache.has(url)) return cache.get(url);
+
+    const p = new Promise(resolve=>{
+      const img = new Image();
+      img.decoding = "async";
+      img.onload = () => resolve(true);
+      img.onerror = () => resolve(false);
+      img.src = url;
     });
+    cache.set(url, p);
+    return p;
+  }
 
-    function tick() {
-      el.textContent = formatter.format(new Date()) + ", berlin_";
+  function srcFor(el){
+    return el.type === "video" ? el.poster : el.src;
+  }
 
-      // обновление ровно по смене секунды
-      const delay = 1000 - (Date.now() % 1000) + 10;
-      setTimeout(tick, delay);
+  function showCenter(el){
+    center.innerHTML = "";
+    if(currentVideo){ currentVideo.pause(); currentVideo = null; }
+
+    if(el.type === "img"){
+      const img = document.createElement("img");
+      img.className = "rg-main";
+      img.decoding = "async";
+      img.loading = "eager";
+      img.src = el.src;
+      center.appendChild(img);
+      return;
     }
 
-    tick();
-  </script>
-</body>
-</html>
+    const v = document.createElement("video");
+    v.className = "rg-main";
+    v.src = el.src;
+    v.poster = el.poster;
+
+    v.autoplay = true;
+    v.muted = false;
+    v.loop = true;
+    v.controls = false;
+    v.playsInline = true;
+    v.preload = "auto";
+
+    center.appendChild(v);
+    currentVideo = v;
+
+    const tryPlay = async () => {
+      try { await v.play(); } catch(e) {}
+    };
+    tryPlay();
+    const once = () => { tryPlay(); window.removeEventListener("pointerdown", once); };
+    window.addEventListener("pointerdown", once, { once:true });
+  }
+
+  async function show(i){
+    const t = ++token;
+
+    if(i < 0) i = elements.length - 1;
+    if(i >= elements.length) i = 0;
+    index = i;
+
+    const prev = (i - 1 + elements.length) % elements.length;
+    const next = (i + 1) % elements.length;
+
+    const prevEl = elements[prev];
+    const nextEl = elements[next];
+    const curEl  = elements[i];
+
+    await Promise.all([
+      preload(srcFor(curEl)),
+      preload(srcFor(prevEl)),
+      preload(srcFor(nextEl))
+    ]);
+
+    if(t !== token) return;
+
+    left.src  = srcFor(prevEl);
+    right.src = srcFor(nextEl);
+    showCenter(curEl);
+
+    preload(srcFor(elements[(prev - 1 + elements.length) % elements.length]));
+    preload(srcFor(elements[(next + 1) % elements.length]));
+  }
+
+  prevBtn.addEventListener("click", ()=>show(index - 1));
+  nextBtn.addEventListener("click", ()=>show(index + 1));
+
+  gallery.addEventListener("click", e=>{
+    if(e.target === gallery) gallery.style.display = "none";
+  });
+
+  if(!window.__rgKeyHandler){
+    window.__rgKeyHandler = e=>{
+      const g = document.getElementById("rg-gallery");
+      if(!g || g.style.display === "none") return;
+      if(e.key === "ArrowRight") g.querySelector(".rg-next")?.click();
+      if(e.key === "ArrowLeft")  g.querySelector(".rg-prev")?.click();
+      if(e.key === "Escape") g.style.display = "none";
+    };
+    document.addEventListener("keydown", window.__rgKeyHandler);
+  }
+
+  show(0);
+})();
+</script>
