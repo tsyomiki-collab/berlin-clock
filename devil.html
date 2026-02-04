@@ -1,0 +1,125 @@
+<div id="rg-gallery">
+  <div id="rg-stage">
+    <div id="rg-center">
+      <div class="rg-nav">
+        <button class="rg-btn rg-prev" type="button">⟨</button>
+        <button class="rg-btn rg-next" type="button">⟩</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+#rg-gallery{position:fixed;inset:0;background:#fcfcfc;z-index:9999;overflow:hidden}
+#rg-stage{position:absolute;inset:0;top:-60px;display:flex;align-items:center;justify-content:center;pointer-events:none}
+#rg-center{width:74vw;max-width:430px;height:50vh;max-height:460px;display:flex;align-items:center;justify-content:center;position:relative;pointer-events:none}
+.rg-main{max-width:100%;max-height:100%;object-fit:contain;display:block;pointer-events:auto}
+.rg-nav{position:absolute;left:50%;bottom:-65px;transform:translateX(-50%);display:flex;gap:25px;pointer-events:auto}
+.rg-btn{font-size:1.6rem;background:none;border:none;color:#666;cursor:pointer;padding:4px 8px;user-select:none;-webkit-tap-highlight-color:transparent}
+</style>
+
+<script>
+(function(){
+  const gallery=document.getElementById("rg-gallery");
+  if(!gallery||gallery.dataset.rgInit==="1")return;
+  gallery.dataset.rgInit="1";
+
+  const VIDEO_POSTER="https://raw.githubusercontent.com/tsyomiki-collab/devil2/main/Screenshot%202026-02-03%20at%2019.01.32.png";
+
+  const elements=[
+    {type:'img',src:"https://github.com/tsyomiki-collab/devil2/raw/main/photo_2025-09-17%2001.41.48-2.webp"},
+    {type:'img',src:"https://github.com/tsyomiki-collab/devil2/raw/main/photo_2025-09-17%2001.50.23-2.webp"},
+    {type:'img',src:"https://raw.githubusercontent.com/tsyomiki-collab/devil1/main/DevilAngel_ElenasKasnatschejew_TianaLenz_Editorial_3.webp"},
+    {type:'img',src:"https://github.com/tsyomiki-collab/devil2/raw/main/photo_2025-09-17%2001.57.15-2.webp"},
+    {type:'img',src:"https://raw.githubusercontent.com/tsyomiki-collab/devil1/main/DevilAngel_ElenasKasnatschejew_TianaLenz_Editorial_5.webp"},
+    {type:'img',src:"https://github.com/tsyomiki-collab/devil2/raw/main/photo_2025-09-17%2001.59.22-2.webp"},
+    {type:'video',src:"https://res.cloudinary.com/dmtnse4sz/video/upload/v1769438095/Editorial_AngelundDevil_TokioHeavenAndHell43_pzzoaq.mp4",poster:VIDEO_POSTER},
+    {type:'img',src:"https://github.com/tsyomiki-collab/devil2/raw/main/photo_2025-09-17%2002.01.35-2.webp"},
+    {type:'img',src:"https://github.com/tsyomiki-collab/devil2/raw/main/photo_2025-09-17%2002.03.31-2.webp"},
+    {type:'img',src:"https://github.com/tsyomiki-collab/devil2/raw/main/photo_2025-09-17%2002.06.53-2.webp"},
+    {type:'img',src:"https://github.com/tsyomiki-collab/devil2/raw/main/DevilAngel_ElenasKasnatschejew_TianaLenz_Editorial_10.webp"}
+  ];
+
+  let index=0,token=0,currentVideo=null;
+  const center=document.getElementById("rg-center");
+  const prevBtn=gallery.querySelector(".rg-prev");
+  const nextBtn=gallery.querySelector(".rg-next");
+  const cache=new Map();
+
+  function preloadImage(src){
+    if(!src)return Promise.resolve();
+    if(cache.has(src))return cache.get(src);
+    const p=new Promise(r=>{const i=new Image();i.decoding="async";i.onload=i.onerror=()=>r();i.src=src});
+    cache.set(src,p);return p;
+  }
+
+  function preloadVideo(src){
+    if(!src)return Promise.resolve();
+    const k="v:"+src;
+    if(cache.has(k))return cache.get(k);
+    const p=new Promise(r=>{const v=document.createElement("video");v.preload="metadata";v.onloadedmetadata=v.onerror=()=>r();v.src=src});
+    cache.set(k,p);return p;
+  }
+
+  function preloadElement(el){
+    return el.type==="video"?Promise.all([preloadImage(el.poster),preloadVideo(el.src)]):preloadImage(el.src);
+  }
+
+  function clearCenter(){
+    const nav=center.querySelector(".rg-nav");
+    center.innerHTML="";
+    if(nav)center.appendChild(nav);
+  }
+
+  async function startVideo(v){
+    v.muted=false;
+    try{await v.play();return}catch(e){}
+    v.muted=true;
+    try{await v.play()}catch(e){}
+    const enable=async()=>{try{v.muted=false;await v.play()}catch(e){}};
+    window.addEventListener("pointerdown",enable,{once:true});
+    window.addEventListener("touchstart",enable,{once:true,passive:true});
+    window.addEventListener("keydown",enable,{once:true});
+  }
+
+  function showCenter(el){
+    clearCenter();
+    if(currentVideo){currentVideo.pause();currentVideo=null}
+    if(el.type==="img"){
+      const img=document.createElement("img");
+      img.src=el.src;img.className="rg-main";img.decoding="async";img.loading="eager";
+      center.appendChild(img);return;
+    }
+    const v=document.createElement("video");
+    v.className="rg-main";v.src=el.src;if(el.poster)v.poster=el.poster;
+    v.autoplay=true;v.loop=true;v.controls=false;v.playsInline=true;v.preload="auto";
+    v.setAttribute("controlsList","nodownload noplaybackrate noremoteplayback");
+    v.setAttribute("disablePictureInPicture","");
+    v.setAttribute("disableRemotePlayback","");
+    center.appendChild(v);currentVideo=v;startVideo(v);
+  }
+
+  async function show(i){
+    const t=++token;
+    if(i<0)i=elements.length-1;
+    if(i>=elements.length)i=0;
+    index=i;
+    const prev=(i-1+elements.length)%elements.length;
+    const next=(i+1)%elements.length;
+    await Promise.all([preloadElement(elements[i]),preloadElement(elements[prev]),preloadElement(elements[next])]);
+    if(t!==token)return;
+    showCenter(elements[i]);
+    preloadElement(elements[(prev-1+elements.length)%elements.length]);
+    preloadElement(elements[(next+1)%elements.length]);
+  }
+
+  prevBtn.onclick=()=>show(index-1);
+  nextBtn.onclick=()=>show(index+1);
+
+  let startX=0;
+  gallery.addEventListener("touchstart",e=>{startX=e.touches[0].clientX},{passive:true});
+  gallery.addEventListener("touchend",e=>{const d=e.changedTouches[0].clientX-startX;if(Math.abs(d)>40){d<0?show(index+1):show(index-1)}},{passive:true});
+
+  show(0);
+})();
+</script>
