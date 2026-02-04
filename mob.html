@@ -1,40 +1,49 @@
+<iframe
+  src="https://tsyomiki-collab.github.io/berlin-clock/mob.html"
+  style="width:100%; height:100%; border:0; display:block;"
+  scrolling="no"
+  loading="eager"
+  title="Berlin Clock (Mobile)">
+</iframe>
+
+
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>Berlin clock</title>
 
   <style>
-    @font-face {
-      font-family: "SegoeUI";
-      src:
-        local("Segoe UI Light"),
-        url("https://c.s-microsoft.com/static/fonts/segoe-ui/west-european/light/latest.woff2") format("woff2"),
-        url("https://c.s-microsoft.com/static/fonts/segoe-ui/west-european/light/latest.woff") format("woff"),
-        url("https://c.s-microsoft.com/static/fonts/segoe-ui/west-european/light/latest.ttf") format("truetype");
-      font-weight: 300;
-      font-style: normal;
-      font-display: swap;
+    html, body{
+      margin:0;
+      padding:0;
+      background:transparent;
+      overflow:hidden;
+
+      /* ВОТ ЭТО УБИРАЕТ “сам увеличил текст на айфоне” */
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
     }
 
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: transparent;
-    }
+    #clock{
+      display:inline-block;
 
-    #clock {
-      font-family: "SegoeUI", "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-      font-weight: 600;        /* Segoe UI Light */
-      font-size: 10px;
-      letter-spacing: 0.01em;
-      line-height: 14px;
-      white-space: nowrap;
-      color: #000;
+      /* тоньше */
+      font-weight:300;
+
+      /* меньше */
+      font-size:10px;
+      line-height:14px;
+      letter-spacing:0.01em;
+      white-space:nowrap;
+      color:#000;
 
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+
+      /* норм фоллбек для iOS */
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     }
   </style>
 </head>
@@ -53,14 +62,11 @@
       second: "2-digit"
     });
 
-    function tick() {
+    function tick(){
       el.textContent = formatter.format(new Date()) + ", berlin_";
-
-      // обновление ровно по смене секунды
       const delay = 1000 - (Date.now() % 1000) + 10;
       setTimeout(tick, delay);
     }
-
     tick();
   </script>
 </body>
