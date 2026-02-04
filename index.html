@@ -54,7 +54,7 @@
     });
 
     function tick() {
-      el.textContent = formatter.format(new Date()) + " berlin";
+      el.textContent = formatter.format(new Date()) + ", berlin_";
 
       // обновление ровно по смене секунды
       const delay = 1000 - (Date.now() % 1000) + 10;
