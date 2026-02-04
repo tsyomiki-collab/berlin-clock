@@ -56,7 +56,7 @@
     });
 
     function tick(){
-      el.textContent = formatter.format(new Date()) + ", berlin_";
+      el.textContent = formatter.format(new Date()) + ", berlin";
       const delay = 1000 - (Date.now() % 1000) + 10;
       setTimeout(tick, delay);
     }
