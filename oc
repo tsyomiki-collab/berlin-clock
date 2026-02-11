@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>oc clock</title>
+
+  <style>
+    @font-face {
+      font-family: "NeueHaas";
+      src: url("https://raw.githubusercontent.com/HoiskolensChemikerforening/landing-page/master/src/font/neue-haas-grotesk/NHaasGroteskDSPro-55Rg.otf") format("opentype");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: transparent;
+    }
+
+    #clock {
+      font-family: "NeueHaas", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+      font-weight: 350;
+      font-size: 14px;
+      letter-spacing: 0.01em;
+      line-height: 12px;
+      white-space: nowrap;
+      color: #000;
+
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+  </style>
+</head>
+
+<body>
+  <span id="clock"></span>
+
+  <script>
+    const el = document.getElementById("clock");
+
+    const formatter = new Intl.DateTimeFormat("en-US", {
+      timeZone: "America/Los_Angeles",
+      hour12: true,
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit"
+    });
+
+    function tick() {
+      const parts = formatter.formatToParts(new Date());
+
+      const hh = parts.find(p => p.type === "hour").value;
+      const mm = parts.find(p => p.type === "minute").value;
+      const ss = parts.find(p => p.type === "second").value;
+      const dayPeriod = parts.find(p => p.type === "dayPeriod").value.toLowerCase();
+
+      el.textContent = `OC, ${hh}:${mm}:${ss} ${dayPeriod}`;
+
+      const delay = 1000 - (Date.now() % 1000) + 10;
+      setTimeout(tick, delay);
+    }
+
+    tick();
+  </script>
+</body>
+</html>
